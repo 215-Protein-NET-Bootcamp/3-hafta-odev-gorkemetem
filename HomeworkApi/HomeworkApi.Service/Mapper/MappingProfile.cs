@@ -8,6 +8,8 @@ namespace HomeworkApi.Service
     {
         public MappingProfile()
         {
+            CreateMap<Account, AccountDto>().ReverseMap();
+            CreateMap<Person, PersonDto>().ReverseMap();
             CreateMap<Country, CountryDto>().ReverseMap();
             CreateMap<Department, DepartmentDto>().ReverseMap();
             CreateMap<Employee, EmployeeDto>().ReverseMap();
