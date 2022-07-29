@@ -1,16 +1,15 @@
-using AutoMapper;
-using HomeworkApi.Data;
-using HomeworkApi.Service;
+using HomeworkApi.Base;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using ProteinApi;
+using System.Net;
 
-namespace ProteinApi
+namespace HomeworkApi
 {
     public class Startup
     {
@@ -20,60 +19,29 @@ namespace ProteinApi
         }
 
         public IConfiguration Configuration { get; }
+        public static JwtConfig JwtConfig { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            // db  sql server or posgre
-            var dbtype = Configuration.GetSection("ConnectionStrings:DbType").Get<string>().ToString();
-            if (dbtype == "SQL")
-            {
-                var dbConfig = Configuration.GetConnectionString("DefaultConnection");
-                services.AddDbContext<AppDbContext>(options => options
-                   .UseSqlServer(dbConfig)
-                   );
-            }
-            else if (dbtype == "Postgre")
-            {
-                var dbConfig = Configuration.GetConnectionString("PostgreSqlConnection");
-                services.AddDbContext<AppDbContext>(options => options
-                   .UseNpgsql(dbConfig)
-                   );
-            }
-
-            // dapper 
-            services.AddSingleton<DapperDbContext>();
-            services.AddScoped<ICountryRepository, CountryRepository>();
-            services.AddScoped<ICountryService, CountryService>();
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IDepartmentService, DepartmentService>();
-
-            // uow
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            // mapper
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new MappingProfile());
-            });
-            services.AddSingleton(mapperConfig.CreateMapper());
-
-
-            
-
-            // add services
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IFolderRepository, FolderRepository>();
-            services.AddScoped<IFolderService, FolderService>();
-
-
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+
+            // Configure JWT Bearer
+            JwtConfig = Configuration.GetSection("JwtConfig").Get<JwtConfig>();
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+
+            // add Filter
+            services.AddMvc(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProteinApi", Version = "v1" });
+                options.Filters.Add(typeof(ResponseGiudAttribute));
             });
+
+            // services
+            services.AddJwtBearerAuthentication();
+            services.AddServicesDependencyInjection();
+            services.AddContextDependencyInjection(Configuration);
+            services.AddCustomizeSwagger();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,7 +53,32 @@ namespace ProteinApi
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProteinApi v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.DefaultModelsExpandDepth(-1); // Remove Schema on Swagger UI
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patika");
+                c.DocumentTitle = "Patika";
+            });
+
+            // error handling 
+            app.UseExceptionHandler(appError =>
+            {
+                appError.Run(async context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.ContentType = "application/json";
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextFeature != null)
+                    {
+                        await context.Response.WriteAsync(new ErrorDetail()
+                        {
+                            StatusCode = context.Response.StatusCode,
+                            Message = "Internal Server Error. App Level."
+                        }.ToString());
+                    }
+                });
+            });
+
 
             app.UseHttpsRedirection();
 
@@ -97,7 +90,11 @@ namespace ProteinApi
 
             app.UseRouting();
 
+            // add auth 
+            app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
@@ -106,7 +103,6 @@ namespace ProteinApi
 
 
             
-
         }
     }
 }

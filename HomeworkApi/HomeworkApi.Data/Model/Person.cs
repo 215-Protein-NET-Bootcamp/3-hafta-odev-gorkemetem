@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HomeworkApi.Data
 {
     public class Person 
     {
+        [Key]
         public int AccountId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
