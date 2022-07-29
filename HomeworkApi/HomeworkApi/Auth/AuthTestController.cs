@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace HomeworkApi
 {
     [ApiController]
-    [Route("protein/v1/api/[controller]")]
+    [Route("api/v1/homework/[controller]")]
     public class AuthTestController : ControllerBase
     {
         public AuthTestController() : base()

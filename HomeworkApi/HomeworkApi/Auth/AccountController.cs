@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace HomeworkApi.Auth
 {
     [ApiController]
-    [Route("protein/v1/api/[controller]")]
+    [Route("api/v1/homework/[controller]")]
     public class AccountController : BaseController<AccountDto, Account>
     {
         private readonly IAccountService _accountService;
