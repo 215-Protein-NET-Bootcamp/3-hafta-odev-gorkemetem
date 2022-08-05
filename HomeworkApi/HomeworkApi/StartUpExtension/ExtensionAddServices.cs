@@ -39,18 +39,12 @@ namespace HomeworkApi
         {
             // dapper 
             services.AddSingleton<DapperDbContext>();
-            services.AddScoped<ICountryRepository, CountryRepository>();
-            services.AddScoped<ICountryService, CountryService>();
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IDepartmentService, DepartmentService>();
+            
 
             // add services
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IPersonService, PersonService>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IFolderRepository, FolderRepository>();
-            services.AddScoped<IFolderService, FolderService>();
+            
 
 
             // uow

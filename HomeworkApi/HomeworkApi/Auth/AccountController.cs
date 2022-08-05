@@ -5,8 +5,6 @@ using HomeworkApi.Dto;
 using HomeworkApi.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -29,12 +27,7 @@ namespace HomeworkApi.Auth
         [Authorize]
         public new async Task<IActionResult> CreateAsync([FromBody] AccountDto resource)
         {
-            var result = await _accountService.InsertAsync(resource);
-
-            if (!result.Success)
-                return BadRequest(result);
-
-            return StatusCode(201, result);
+            return await base.CreateAsync(resource);
         }
 
         [HttpGet("GetUserDetail")]
@@ -47,21 +40,9 @@ namespace HomeworkApi.Auth
 
         [HttpPut("self-update/{id:int}")]
         [Authorize]
-        public async Task<IActionResult> SelfUpdateAsync(int id, [FromBody] AccountDto resource)
+        public async Task<IActionResult> Update(int id, [FromBody] AccountDto resource)
         {
-            Log.Information($"{User.Identity?.Name}: self-update account with Id is {id}.");
-
-            var identifier = (User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            if (!identifier.Equals(id.ToString()))
-                return BadRequest(new BaseResponse<AccountDto>("Account_Not_Permitted"));
-
-            var result = await _accountService.SelfUpdateAsync(id, resource);
-
-            if (!result.Success)
-                return BadRequest(result);
-
-            return Ok(result);
+            return await base.UpdateAsync(id, resource);
         }
 
         [HttpPut("change-password/{id:int}")]

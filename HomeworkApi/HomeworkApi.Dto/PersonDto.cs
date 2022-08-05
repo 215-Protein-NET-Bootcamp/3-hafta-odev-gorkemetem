@@ -8,6 +8,8 @@ namespace HomeworkApi.Dto
     {
         public int AccountId { get; set; }
 
+        public string StaffId { get; set; }
+
         [Required]
         [MaxLength(500)]
         [Display(Name = "FirstName")]

@@ -2,8 +2,10 @@
 using HomeworkApi.Data;
 using HomeworkApi.Dto;
 using HomeworkApi.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HomeworkApi
@@ -20,6 +22,7 @@ namespace HomeworkApi
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public new async Task<IActionResult> GetByIdAsync(int id)
         {
             Log.Information($"{User.Identity?.Name}: get a person with Id is {id}.");
@@ -28,9 +31,12 @@ namespace HomeworkApi
         }
 
         [HttpPost]
+        [Authorize]
         public new async Task<IActionResult> CreateAsync([FromBody] PersonDto resource)
         {
             Log.Information($"{User.Identity?.Name}: create a person.");
+
+            resource.StaffId = (User.Identity as ClaimsIdentity).FindFirst("AccountId").Value;
 
             var insertResult = await personService.InsertAsync(resource);
 
@@ -41,6 +47,7 @@ namespace HomeworkApi
         }
 
         [HttpPut("{id:int}")]
+        [Authorize]
         public new async Task<IActionResult> UpdateAsync(int id, [FromBody] PersonDto resource)
         {
             Log.Information($"{User.Identity?.Name}: update a person with Id is {id}.");
@@ -50,6 +57,7 @@ namespace HomeworkApi
 
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         public new async Task<IActionResult> DeleteAsync(int id)
         {
             Log.Information($"{User.Identity?.Name}: delete a person with Id is {id}.");

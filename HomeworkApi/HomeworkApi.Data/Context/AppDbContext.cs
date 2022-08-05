@@ -10,10 +10,6 @@ namespace HomeworkApi.Data
 
         }
 
-        public DbSet<Country> country { get; set; }
-        public DbSet<Department> department { get; set; }
-        public DbSet<Employee> employee { get; set; }
-        public DbSet<Folder> folder { get; set; }
         public DbSet<Person> person { get; set; }
         public DbSet<Account> account { get; set; }
 

@@ -2,7 +2,6 @@
 using HomeworkApi.Base;
 using HomeworkApi.Dto;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,6 +17,11 @@ namespace HomeworkApi.Data
         private IQueryable<Person> ConditionFilter(PersonDto filterResource)
         {
             var queryable = Context.person.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filterResource.StaffId))
+            {
+                queryable.Where(x => x.StaffId == filterResource.StaffId);
+            }
 
             if (filterResource != null)
             {
