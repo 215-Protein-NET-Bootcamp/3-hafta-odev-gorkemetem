@@ -15,7 +15,6 @@ namespace HomeworkApi
 
         }
 
-
         [HttpGet("NoToken")]
         public string NoToken()
         {
@@ -27,40 +26,6 @@ namespace HomeworkApi
         public string Authorize()
         {
             return "Authorize";
-        }
-
-        [Authorize]
-        [HttpGet("Admin")]
-        public string Admin()
-        {
-            return "Admin";
-        }
-
-        [Authorize]
-        [HttpGet("Viewer")]
-        public string Viewer()
-        {
-            return "Viewer";
-        }
-
-
-        [Authorize]
-        [HttpGet("EditorQTNS")]
-        public string EditorQTNS()
-        {
-            return "EditorQTNS";
-        }
-
-        [Authorize]
-        [HttpGet("AdminViewer")]
-        public string AdminViewer()
-        {
-            Log.Information($"{User.Identity?.Name}: get account and group data with account-Id is.");
-           
-            var userIdentify = (User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.NameIdentifier).Value;
-            var userId = (User.Identity as ClaimsIdentity).FindFirst("AccountId").Value;
-            return "AdminViewer";
-        }
-        
+        }  
     }
 }

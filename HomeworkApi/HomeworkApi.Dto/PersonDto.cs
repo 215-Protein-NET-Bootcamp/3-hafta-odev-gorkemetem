@@ -9,11 +9,6 @@ namespace HomeworkApi.Dto
         public int AccountId { get; set; }
 
         [Required]
-        [MaxLength(25)]
-        [Display(Name = "StaffId")]
-        public string StaffId { get; set; }
-
-        [Required]
         [MaxLength(500)]
         [Display(Name = "FirstName")]
         public string FirstName { get; set; }
