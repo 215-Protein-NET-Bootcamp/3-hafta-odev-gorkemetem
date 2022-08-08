@@ -3,7 +3,7 @@
 ![swagger](ScreenShots/Homework.PNG)
 ![swagger](ScreenShots/Homework2.PNG)
 
-
+Jwt implementasyonu yapıldı. Account ve Person controller'ları oluşturuldu.
 ## Ekran Görüntüleri
     Token:
 ![swagger](ScreenShots/TokenRequestBody.PNG)
