@@ -1,7 +1,11 @@
 # 3-hafta-odev-gorkemetem
 
+![swagger](ScreenShots/Homework.PNG)
+![swagger](ScreenShots/Homework2.PNG)
+
+
 ## Ekran Görüntüleri
-    Token
+    Token:
 ![swagger](ScreenShots/TokenRequestBody.PNG)
 ![swagger](ScreenShots/AccessToken.PNG)
 ![swagger](ScreenShots/Authorize.PNG)
